@@ -8,24 +8,24 @@ namespace AprioriAlgorithm
 {
     class Swap
     {
-	// Parametre olarak verilen double diziyi büyükten küçüye doğru sıralarken
+        // Parametre olarak verilen double diziyi büyükten küçüye doğru sıralarken
         // aynı zamanda değerlerin karşılık geldiği string dizisini de düzenleyen metod.
         public void swap(double[] swapArray, string[] swapArrayS)
         {
-            double gecici; string geciciS;
+            double swap; string swapS;
             for (int i = 0; i < swapArray.Length; i++)
             {
                 for (int j = 0; j < swapArray.Length; j++)
                 {
                     if (swapArray[i] > swapArray[j])
                     {
-                        gecici = swapArray[i];
+                        swap = swapArray[i];
                         swapArray[i] = swapArray[j];
-                        swapArray[j] = gecici;
+                        swapArray[j] = swap;
 
-                        geciciS = swapArrayS[i];
+                        swapS = swapArrayS[i];
                         swapArrayS[i] = swapArrayS[j];
-                        swapArrayS[j] = geciciS;
+                        swapArrayS[j] = swapS;
                     }
 
                 }

@@ -13,15 +13,15 @@ namespace AprioriAlgorithm
      
         }
         
-	// Uygulamanın ilk kez çalışığ çalışmadığını kontrol eden değişken.
+	    // Uygulamanın ilk kez çalışığ çalışmadığını kontrol eden değişken.
         bool firstRun = true;
         private void btn_Uygula_Click(object sender, RibbonControlEventArgs e)
         {
-	    // Uygula butonuna basıldığında aktif excel sayfası, excel kitabı uygulamaya bağlanıyor.
+	        // Uygula butonuna basıldığında aktif excel sayfası, excel kitabı uygulamaya bağlanıyor.
             Workbook currentBook = Globals.ThisAddIn.GetActiveWorkBook();
             Excel.Application currentApp = Globals.ThisAddIn.GetActiveApp();
-
-	    // Uygulama ikinci veya daha fazla kez çalışıyorsa aktif sayfalar silinerek yeni hesaplama yapıkması sağlanıyor
+	    
+	        // Uygulama ikinci veya daha fazla kez çalışıyorsa aktif sayfalar silinerek yeni hesaplama yapıkması sağlanıyor
             if (!firstRun)
             {
                 for (int i = 0; i < 4; i++)
@@ -30,8 +30,8 @@ namespace AprioriAlgorithm
                 }
 
             }
-		
-	    // Eklenti sekmesindeki editbox konrol edilerek işlemlere başlanıyor.
+
+	        // Eklenti sekmesindeki editbox konrol edilerek işlemlere başlanıyor.
             if (SupportValue.Text != "" && SupportValue.Text !="0,00")
             {
                 try
@@ -39,16 +39,17 @@ namespace AprioriAlgorithm
                     firstRun = false;
                     Worksheet currentSheetOri = Globals.ThisAddIn.GetActiveWorkSheet();
                     double supportValue = Convert.ToDouble(SupportValue.Text);
-                    int rowCount = currentSheetOri.UsedRange.Rows.Count;
                     currentSheetOri.Name = "Orijinal Data Set";
-                   
-		   // Sayfa yüklendiğinde "A1" hücresine "Date,Time,Transaction,Item" yazılıyor.
+
+		            // Sayfa yüklendiğinde "A1" hücresine "Date,Time,Transaction,Item" yazılıyor.
                     Excel.Range load = currentSheetOri.Range["A1"];
                     load.Value = "Date,Time,Transaction,Item";
+                    int rowCount = currentSheetOri.UsedRange.Rows.Count;
                     Range dataSet = currentSheetOri.Range["A1:A" + (rowCount)];
                     Object[,] originalData = (dataSet.Value2);
                     int elementCount = 0;
-		    // Veri setinin tamamı excel sayfasından alınıp bir diziye aktarılıyor.
+		            
+                    // Veri setinin tamamı excel sayfasından alınıp bir diziye aktarılıyor.
                     string[] dataSetString = new string[rowCount];
                     foreach (object item in originalData)
                     {
@@ -56,17 +57,18 @@ namespace AprioriAlgorithm
                         elementCount++;
                     }
 
+                    // Tek satır olan veri "," e göre parçalanarak 4 sütuna cevriliyor. 
                     Worksheet currentSheet = Globals.ThisAddIn.GetActiveWorkSheet();
-	            // Tek satır olan veri "," e göre parçalanarak 4 sütuna cevriliyor. 
                     TextToColumn t2c = new TextToColumn();
                     currentSheet = t2c.textToColumn(dataSetString, currentSheetOri, currentApp, currentBook);
 
                     //CREATE PIVOT TABLE
-		   // Veri setindeki değerler ile bir pivot tablo oluşturuluyor. 
+                    // Veri setindeki değerler ile bir pivot tablo oluşturuluyor.
                     CreatePivotTable cPT = new CreatePivotTable();
                     currentSheet = cPT.createPivotTable(currentSheet, currentApp, currentBook, rowCount);
+                    
                     //NEW WORKSHEET
-		   // Yeni bir ecxel çalışma sayfası açılıyor
+                    // Yeni bir ecxel çalışma sayfası açılıyor
                     Worksheet ecurrentSheet = Globals.ThisAddIn.GetActiveWorkSheet();
                     if (currentApp.Application.Sheets.Count < 4)
                     {
@@ -77,8 +79,9 @@ namespace AprioriAlgorithm
                         ecurrentSheet = currentApp.Worksheets[4];
                     }
                     ecurrentSheet.Name = "Apriori Algorithm";
+
                     //CALC SUPPORT VALUE
-		   // Bütün ürünlerin tek tek destek değerleri hesaplanıyor. Yeni açılan excel sayfasında listeleniyor
+                    // Bütün ürünlerin tek tek destek değerleri hesaplanıyor. Yeni açılan excel sayfasında listeleniyor
                     int erowCount = ecurrentSheet.UsedRange.Rows.Count;
                     int rowCount2 = currentSheet.UsedRange.Rows.Count;
                     var columnCount = currentSheet.UsedRange.Columns.Count;
@@ -90,8 +93,8 @@ namespace AprioriAlgorithm
                     Range support = ecurrentSheet.Range["A" + (erowCount + 1)];
                     support.EntireRow.Font.Bold = true;
                     support.Value = "Urunlerin Destek Degerleri";
-		   // Coolumn sınıfından bir nesne ayağa kaldırılarak ürünlerin yatayda kapladıkları alana göre bulunuyor(kolon isimleri).
-                    // Bu isimler bir dizide sakalanıyor.
+
+                    // Coolumn sınıfından bir nesne ayağa kaldırılarak ürünlerin yatayda kapladıkları alana göre bulunuyor(kolon isimleri).
                     Columns columns = new Columns();
                     string[] stringColumn = columns.writeColumn(columnCount);
                     for (int i = 1; i < columnCount - 1; i++)
@@ -109,7 +112,7 @@ namespace AprioriAlgorithm
                     }
 
                     // NEW ITEMSET (SUPPORT)
-           	    // Destek değerine (supportValue) göre yeni bir veri seti oluşturuluyor.
+                    // Destek değerine (supportValue) göre yeni bir veri seti oluşturuluyor.
                     // Bu destek değerini sağlamayan ürünler yeni veri setinde ihmal ediliyor.
                     int erowCount2 = ecurrentSheet.UsedRange.Rows.Count;
                     int arraysize = 0;
@@ -136,8 +139,8 @@ namespace AprioriAlgorithm
                             elementCount3++;
                         }
                     }
-	
-		    // Eski veri setinden destek değerine uygun olan veriler yazdırılıyor(Yeni veri setinin elemanları).
+
+                    // Eski veri setinden destek değerine uygun olan veriler yazdırılıyor(Yeni veri setinin elemanları).
                     Range val2 = ecurrentSheet.Range["A" + (erowCount2 + 2)];
                     val2.EntireRow.Font.Bold = true;
                     val2.Value = "Destek Degerine Uygun Urunler ";
@@ -154,14 +157,15 @@ namespace AprioriAlgorithm
                     }
 
                     // ASSOCIATION RULE
-		    // Destek değerlerine uygun olan ürünleri ikili olarak ilişkileri analiz ediliyor.
+                    // Destek değerlerine uygun olan ürünleri ikili olarak ilişkileri analiz ediliyor.
                     // Combination sınıfından bir nesne ayağa kaldırılarak ilişki sayısı hesaplanıyor.(ürün adedinin ikili kombinasyonu)
                     Combination c1 = new Combination();
                     int sayacsize = Convert.ToInt32(c1.calcCombination(arraysize));
                     int[] sayacS = new int[sayacsize];
                     int element = 0;
                     bool flag = false;
-		   // Pivot tablo içerisinde destek değerine uygun ürünler ikili olarak ele alınıp tüm alışverişler boyunca gezilerek kontrol ediliyor.
+
+                    // Pivot tablo içerisinde destek değerine uygun ürünler ikili olarak ele alınıp tüm alışverişler boyunca gezilerek kontrol ediliyor.
                     for (int k = 0; k < supString.Length; k++)
                     {
                         for (int j = 0; j < supString.Length; j++)
@@ -179,7 +183,8 @@ namespace AprioriAlgorithm
                                 {
                                     Range ar = currentSheet.Range["" + supString[k] + (i + 3)];
                                     Range ar2 = currentSheet.Range["" + supString[k + (j + 1)] + (i + 3)];
-				    // Pivot tablo içerinde bulunan bir alışverişte destek değerine uygun iki ürünün birlikte alınıp alınmadığı kontrol ediliyor.
+                                   
+                                    // Pivot tablo içerinde bulunan bir alışverişte destek değerine uygun iki ürünün birlikte alınıp alınmadığı kontrol ediliyor.
                                     if (ar.Value != null && ar2.Value != null)
                                     {
                                         sayac++;
@@ -195,7 +200,7 @@ namespace AprioriAlgorithm
                     }
 
                     //SUPPORT VALUE NAME,SAYAC
-		    // Destek değerine uygun olan ve ikili olarak değerlendirmeye alınan ürünlerin isimleri ve veri seti içerisindeki sıklıkları yazdırılıyor. 
+                    // Destek değerine uygun olan ve ikili olarak değerlendirmeye alınan ürünlerin isimleri ve veri seti içerisindeki sıklıkları yazdırılıyor. 
                     Range val3 = ecurrentSheet.Range["A" + (erowCount2 + 4)];
                     val3.EntireRow.Font.Bold = true;
                     val3.Value = "Ikili Iliskiler ";
@@ -222,7 +227,7 @@ namespace AprioriAlgorithm
                     }
 
                     //ASSOCIATION SUPPORT VALUE
-	 	    // ikili olarak analiz edilen ürünlerin birlikteliklerinin destek değerleri hesaplanıyor ve yazdırılıyor
+                    // İkili olarak analiz edilen ürünlerin birlikteliklerinin destek değerleri hesaplanıyor ve yazdırılıyor
                     int rowcount = ecurrentSheet.UsedRange.Rows.Count;
                     Range val4 = ecurrentSheet.Range["A" + (rowcount + 2)];
                     val4.EntireRow.Font.Bold = true;
@@ -242,7 +247,7 @@ namespace AprioriAlgorithm
                             {
                                 if (Convert.ToDouble(sayacS[say2]) / total < supportValue)
                                 {
-				  // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
+                                    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount + 2 + j)];
                                     val.Value = "{" + supName[each3] + "," + supName[each3 + j + 1] + "}" + " = " + "Bu iliski destek degerine uygun degildir";
                                     val.EntireColumn.AutoFit();
@@ -250,7 +255,7 @@ namespace AprioriAlgorithm
                                 }
                                 else
                                 {
-				    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
+                                    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount + 2 + j)];
                                     val.Value = "{" + supName[each3] + "," + supName[each3 + j + 1] + "}" + " = " + (Convert.ToDouble(sayacS[say2]) / total);
                                     val.EntireColumn.AutoFit();
@@ -263,7 +268,7 @@ namespace AprioriAlgorithm
                     }
                     //RESULT VALUE ADD IN NEW WORKSHEET
                     //CREATE NEW WORKSHEET
-		    // Sonuçların kullancıya bir tablo halinde yazdırılacağı yeni bir Excel çalışma sayfası açılıyor
+                    // Sonuçların kullancıya bir tablo halinde yazdırılacağı yeni bir Excel çalışma sayfası açılıyor
                     Worksheet rcurrentSheet = Globals.ThisAddIn.GetActiveWorkSheet();
                     if (currentApp.Application.Sheets.Count < 5)
                     {
@@ -276,17 +281,18 @@ namespace AprioriAlgorithm
                     rcurrentSheet.Name = "Result";
 
                     //ASSOCIATION COMFIDENCE VALUE
-		    // Birlikteliği olan ürünlerin güven değerleri hesaplanıyor ve yazdırılıyor
+                    // Birlikteliği olan ürünlerin güven değerleri hesaplanıyor ve yazdırılıyor
                     int saysize2 = 0;
                     for (int i = 0; i < sayacS.Length; i++)
                     {
-                        if ((Convert.ToDouble(sayacS[i]) / total) > supportValue)
+                        if ((Convert.ToDouble(sayacS[i]) / total) >= supportValue)
                         {
                             saysize2++;
                         }
 
                     }
-		    // Birlikteliğe giren ürünlerin isimleri ve güven değerlerini bir daha sonra işlenmek üzere bir dizide tuluyor.
+
+                    // Birlikteliğe giren ürünlerin isimleri ve güven değerleri daha sonra işlenmek üzere bir dizide tuluyor.
                     string[] comfValS = new string[saysize2];
                     double[] comfVal = new double[saysize2];
                     int rowcount2 = ecurrentSheet.UsedRange.Rows.Count;
@@ -314,7 +320,7 @@ namespace AprioriAlgorithm
                             {
                                 if (Convert.ToDouble(sayacS[say3]) / total < supportValue)
                                 {
-				    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
+                                    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount2 + 2 + j)];
                                     val.Value = "{" + supName[each4] + "," + supName[each4 + j + 1] + "}" + " = " + "Bu iliski destek degerine uygun degildir";
                                     val.EntireColumn.AutoFit();
@@ -322,7 +328,7 @@ namespace AprioriAlgorithm
                                 }
                                 else
                                 {
-                                     // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
+                                    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount2 + 2 + j)];
                                     val.Value = "{" + supName[each4] + "," + supName[each4 + j + 1] + "}" + " = " + ((Convert.ToDouble(sayacS[say3]) / total) / SupStringSup[each4]);
                                     val.EntireColumn.AutoFit();
@@ -337,17 +343,18 @@ namespace AprioriAlgorithm
                         each4++;
                     }
 
-                    //ASSOCIATION RECOMFİDENCE VALUE    
-	            // Birlikteliği olan ürünlerin ters ilişki şeklinde güven değerleri hesaplanıyor ve yazdırılıyor
+                    //ASSOCIATION RECOMFİDENCE VALUE
+                    // Birlikteliği olan ürünlerin ters ilişki şeklinde güven değerleri hesaplanıyor ve yazdırılıyor
                     int saysize1 = 0;
                     for (int i = 0; i < sayacS.Length; i++)
                     {
-                        if ((Convert.ToDouble(sayacS[i]) / total) > supportValue)
+                        if ((Convert.ToDouble(sayacS[i]) / total) >= supportValue)
                         {
                             saysize1++;
                         }
                     }
-	            // Birlikteliğe giren ürünlerin isimleri ve ters ilişki güven değerlerini bir daha sonra işlenmek üzere bir dizide tuluyor.
+
+                    // Birlikteliğe giren ürünlerin isimleri ve ters ilişki güven değerleri daha sonra işlenmek üzere bir dizide tuluyor.
                     string[] ncomfValS = new string[saysize1];
                     double[] ncomfVal = new double[saysize1];
                     int rowcount3 = ecurrentSheet.UsedRange.Rows.Count;
@@ -368,7 +375,7 @@ namespace AprioriAlgorithm
                             {
                                 if ((Convert.ToDouble(sayacS[say4]) / total) < supportValue)
                                 {
-				    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
+                                    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount3 + 2 + j)];
                                     val.Value = "{" + supName[each5 + j + 1] + "," + supName[each5] + "}" + " = " + "Bu iliski destek degerine uygun degildir";
                                     val.EntireColumn.AutoFit();
@@ -376,7 +383,7 @@ namespace AprioriAlgorithm
                                 }
                                 else
                                 {
-				    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
+                                    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount3 + 2 + j)];
                                     val.Value = "{" + supName[each5 + j + 1] + "," + supName[each5] + "}" + " = " + ((Convert.ToDouble(sayacS[say4]) / total) / SupStringSup[each5 + j + 1]);
                                     val.EntireColumn.AutoFit();
@@ -392,16 +399,17 @@ namespace AprioriAlgorithm
                     }
 
                     //ASSOCIATION LIFT VALUE
-	            // Birlikteliği olan ürünlerin kaldıraç(lift) değerleri hesaplanıyor ve yazdırılıyor
+                    // Birlikteliği olan ürünlerin kaldıraç(lift) değerleri hesaplanıyor ve yazdırılıyor
                     int saysize = 0;
                     for (int i = 0; i < sayacS.Length; i++)
                     {
-                        if ((Convert.ToDouble(sayacS[i]) / total) > supportValue)
+                        if ((Convert.ToDouble(sayacS[i]) / total) >= supportValue)
                         {
                             saysize++;
                         }
                     }
-		    // Birlikteliğe giren ürünlerin isimleri ve lift değerlerini bir daha sonra işlenmek üzere bir dizide tuluyor.
+
+                    // Birlikteliğe giren ürünlerin isimleri ve lift değerleri daha sonra işlenmek üzere bir dizide tuluyor.
                     string[] liftValS = new string[saysize];
                     double[] liftVal = new double[saysize];
                     int rowcount4 = ecurrentSheet.UsedRange.Rows.Count;
@@ -422,7 +430,7 @@ namespace AprioriAlgorithm
                             {
                                 if ((Convert.ToDouble(sayacS[say5]) / total) < supportValue)
                                 {
-				    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
+                                    // Birliktelikler destek değerinin altında kalıyorsa ekrana bilgi mesajı veriliyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount4 + 2 + j)];
                                     val.Value = "{" + supName[each6] + "," + supName[each6 + j + 1] + "}" + " = " + "Bu iliski destek degerine uygun degildir";
                                     val.EntireColumn.AutoFit();
@@ -430,7 +438,7 @@ namespace AprioriAlgorithm
                                 }
                                 else
                                 {
-				    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
+                                    // Birliktelikler destek değerinin altında kalmıyorsa ekrana hesaplana değer yazılıyor.
                                     Range val = ecurrentSheet.Range["" + i + (rowcount4 + 2 + j)];
                                     val.Value = "{" + supName[each6] + "," + supName[each6 + j + 1] + "}" + " = " + ((Convert.ToDouble(sayacS[say5]) / total) / (SupStringSup[each6] * SupStringSup[each6 + j + 1]));
                                     val.EntireColumn.AutoFit();
@@ -446,8 +454,8 @@ namespace AprioriAlgorithm
                         each6++;
                     }
 
-                    //PRINT RESULT VALUE
-		    // Destek değerine uygun olan birlikteliklerin güven değerleri yazdırılıyor.
+                    //PRINT RESUT VALUE
+                    // Destek değerine uygun olan birlikteliklerin güven değerleri yazdırılıyor.
                     Range title = rcurrentSheet.Range["A1"];
                     title.Value = "Comfidence";
                     title.EntireColumn.AutoFit();
@@ -458,8 +466,8 @@ namespace AprioriAlgorithm
                     swp.swap(comfVal, comfValS);
                     ResultPrint resPrnt = new ResultPrint();
                     rcurrentSheet = resPrnt.printResult(rcurrentSheet, comfVal, comfValS, "A");
-			
-		    // Destek değerine uygun olan birlikteliklerin ters ilişki güven değerleri yazdırılıyor.
+
+                    // Destek değerine uygun olan birlikteliklerin ters ilişki güven değerleri yazdırılıyor.
                     Range title2 = rcurrentSheet.Range["B1"];
                     title2.Value = "RComfidence";
                     title2.EntireColumn.AutoFit();
@@ -467,7 +475,7 @@ namespace AprioriAlgorithm
                     swp.swap(ncomfVal, ncomfValS);
                     rcurrentSheet = resPrnt.printResult(rcurrentSheet, ncomfVal, ncomfValS, "B");
 
-		    // Destek değerine uygun olan birlikteliklerin lift değerleri yazdırılıyor.
+                    // Destek değerine uygun olan birlikteliklerin lift değerleri yazdırılıyor.
                     Range title3 = rcurrentSheet.Range["C1"];
                     title3.Value = "Lift";
                     title3.EntireColumn.AutoFit();
@@ -476,29 +484,30 @@ namespace AprioriAlgorithm
                     rcurrentSheet = resPrnt.printResult(rcurrentSheet, liftVal, liftValS, "C");
 
                     //CREATE TABLE
-		    // birliktelik sonuçları tablo haline getiriliyor.
+                    // Bİrliktelik sonuçları tablo haline getiriliyor.
                     cPT.createTable(rcurrentSheet);
                 }
-		// Kullanıcı yanlış birşeyler yaparsa hata mesajı ekrana basılıyor.
                 catch
                 {
+                    // Kullanıcı yanlış birşeyler yaparsa hata mesajı ekrana basılıyor.
                     MessageBox.Show("Birşeyler ters gitti, uygulama adımlarını kontrol ediniz !");
                 }
             }
-	    // if koşulu sağlanmazsa kullanıcıya verilecek mesaj ekrana basılıyor.
+            
+            // if koşulu sağlanmazsa kullanıcıya verilecek mesaj ekrana basılıyor.
             else MessageBox.Show("Bir Destek Değeri Belirleyiniz !");
         }
 
-	// Hakkında butonunun eventi.
+        // Hakkında butonunun eventi.
         private void btn_Info_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Veri setinizi; 'Tarih', 'Saat', 'FişNo', 'ÜrünAdı' şeklinde düzenledikten sonra A2 satırından başlayacak şekilde aktarınız!"
-                + " Ayrıca destek değerini(Support Value) ondalıklı bir sayı olarak belirleyin.\n\n\n"
-                + "Bu uygulama, Pamukkale Üniversitesi Yönetim Bilişim Sistemleri Bölümü öğrencisi Halil KAYACI'nın bitirme projesidir.\n\n"
+            MessageBox.Show(
+                "Bu uygulama, Mayıs 2019 tarihinde Pamukkale Üniversitesi Yönetim Bilişim Sistemleri Bölümü öğretim görevlisi Prof. Dr. Selçuk Burak HAŞILOĞLU"
+                + " danışmanlığında Halil KAYACI tarafından bitirme projesi olarak hazırlanmıştır.\n\n"
                 + "Soru ve görüşleriniz için : halilkayaci@gmail.com","Hakkında", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-	 // Yardım butonunun eventi.
+        // Yardım butonunun eventi.
         private void btn_Help_Click(object sender, RibbonControlEventArgs e)
         {
             Help help = new Help();

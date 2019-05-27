@@ -8,7 +8,7 @@ namespace AprioriAlgorithm
 {
     class Combination
     {
-	// Parametre olarak verilen sayının faktöriyelini hesaplayan metod.
+	    // Parametre olarak verilen sayının faktöriyelini hesaplayan metod.
         public double calcFactorial(int number)
         {
             double factorial = 1;
@@ -18,7 +18,8 @@ namespace AprioriAlgorithm
             }
             return factorial;
         }
-	// Parametre olarak verilen sayının 2'li kombinasyonunu hesaplayan metod.
+	    
+        // Parametre olarak verilen sayının 2'li kombinasyonunu hesaplayan metod.
         public double calcCombination(int number)
         {
             double sonuc = 0;

@@ -8,7 +8,8 @@ namespace AprioriAlgorithm
 {
     class Columns
     {
-        // Parametre olarak verilen sütun sayısı kadar ürünlerin excel sütunlarına yerleşmesini sağlamak amacıyla excel sütün isimlerini
+
+	    // Parametre olarak verilen sütun sayısı kadar ürünlerin excel sütunlarına yerleşmesini sağlamak amacıyla excel sütün isimlerini
         // oluşturan metod.
         public string[] writeColumn(int columnCount)
         {

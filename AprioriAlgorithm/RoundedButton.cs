@@ -10,8 +10,8 @@ namespace AprioriAlgorithm
 {
     class RoundedButton:Button
     {
-	// Kullanım kılavuzunda kullanılmak üzere buton biçimini override eden metod.
-	// Butonlar bu metod sayesinde elips şeklinde çizilmektedir.
+        // Kullanım kılavuzunda kullanılmak üzere buton biçimini override eden metod.
+	    // Butonlar bu metod sayesinde elips şeklinde çizilmektedir.
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
         {
             GraphicsPath grPath = new GraphicsPath();

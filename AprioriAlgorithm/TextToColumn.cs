@@ -10,11 +10,11 @@ namespace AprioriAlgorithm
 {
     class TextToColumn
     {
-	//Veri setinin sütunlara bölünmesini sağlayan metod. Parçalama işlemini virgülü baz alarak yapmaktadır.
+        //Veri setinin sütunlara bölünmesini sağlayan metod. Parçalama işlemini virgülü baz alarak yapmaktadır.
         public Worksheet textToColumn(string[] dataSetString, Worksheet currentSheet, Application currentApp, Workbook currentBook)
         {
             //NEW WORKSHEET
-	    // Kullanıcı veri setinin tekrar kullanılabilirliği açısından verileri  yedekleyip yeni bir Excel çalışma sayfası açılarak parçalama işlemi yapılıyor.
+            // Kullanıcı veri setinin tekrar kullanılabilirliği açısından verileri  yedekleyip yeni bir Excel çalışma sayfası açılarak parçalama işlemi yapılıyor.
             if (currentApp.Application.Sheets.Count < 2)
             {
                 currentSheet = (Excel.Worksheet)currentBook.Worksheets.Add();

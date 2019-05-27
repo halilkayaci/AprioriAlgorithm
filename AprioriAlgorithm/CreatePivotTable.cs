@@ -10,10 +10,10 @@ namespace AprioriAlgorithm
 {
     class CreatePivotTable
     {
-	 // Parametre olarak aktif çalışma sayfası, aktif uygulama, aktf çalışma kitabını alan ve sonucunda bir pivot tablo çizen metod. 
+	    // Parametre olarak aktif çalışma sayfası, aktif uygulama, aktf çalışma kitabını alan ve sonucunda bir pivot tablo çizen metod. 
         public Worksheet createPivotTable(Worksheet currentSheet, Application currentApp, Workbook currentBook, int rowCount)
         {
-	    // Pivot tablo yeni bir excel çalışma sayfası açılarak yazdırılıyor.
+	        // Pivot tablo yeni bir excel çalışma sayfası açılarak yazdırılıyor.
             Excel.Range oRange = currentSheet.Range["C1:D" + rowCount];
             if (currentApp.Application.Sheets.Count < 3)
             {
@@ -29,7 +29,7 @@ namespace AprioriAlgorithm
             Excel.PivotCache oPivotCache = (Excel.PivotCache)currentBook.PivotCaches().Add(Excel.XlPivotTableSourceType.xlDatabase, oRange);
             Excel.PivotTable oPivotTable = (Excel.PivotTable)currentSheet.PivotTables().Add(PivotCache: oPivotCache, TableDestination: oRange2, TableName: "Apriori Pivot Table");
 
-	    // Çizilecek pivot tablo referans olarak işlem numarası ve ürünleri alıyor.
+	        // Çizilecek pivot tablo referans olarak işlem numarası ve ürünleri alıyor.
             // işlem numarasına göre hangi ürünler o işlem içerisinde varsa tabloda işaretleme yapıyor.
             Excel.PivotField oPivotField1 = (Excel.PivotField)oPivotTable.PivotFields("Transaction");
             oPivotField1.Orientation = Excel.XlPivotFieldOrientation.xlRowField;
@@ -43,8 +43,8 @@ namespace AprioriAlgorithm
 
             return currentSheet;
         }
-
-	// Tablo çizen metod
+	
+	    // Tablo çizen metod
         public void createTable(Worksheet currentSheet)
         {
             Excel.Range last = currentSheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);

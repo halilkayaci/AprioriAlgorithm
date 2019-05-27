@@ -9,7 +9,7 @@ namespace AprioriAlgorithm
 {
     class ResultPrint
     {
-	// Parametre olarak verilen çalışma sayfasına ve sütuna, yine parametre olarak verilmiş ilişki isimlerini ve ilişkinin değerini yazdıran metod.
+        // Parametre olarak verilen çalışma sayfasına ve sütuna, yine parametre olarak verilmiş ilişki isimlerini ve ilişkinin değerini yazdıran metod.
         public Worksheet printResult(Worksheet rcurrentSheet, double[] array, string[] arrayS, string column)
         {
             for (int i = 0; i < array.Length; i++)
